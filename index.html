@@ -96,12 +96,7 @@
 
   <template id="item-template">
     <tr class="item-row">
-      <td class="name-cell">
-        <div class="name-fields">
-          <label><span class="field-label">Наименование</span><input class="item-name" type="text" placeholder="Товар или услуга"></label>
-          <label class="catalog-field"><span>Из каталога</span><select class="item-catalog"><option value="">—</option></select></label>
-        </div>
-      </td>
+      <td class="name-cell"><label><span class="field-label">Наименование</span><input class="item-name" type="text" placeholder="Товар или услуга"></label></td>
       <td><label><span class="field-label">Количество</span><input class="item-quantity" type="text" inputmode="decimal" placeholder="0" autocomplete="off"></label></td>
       <td><label><span class="field-label">Единица</span><select class="item-unit"><option value="шт">шт</option><option value="час">час</option><option value="услуга">услуга</option></select></label></td>
       <td><label><span class="field-label">Цена, <span data-currency-symbol>₸</span></span><input class="item-price" type="text" inputmode="decimal" placeholder="0" autocomplete="off"></label></td>
