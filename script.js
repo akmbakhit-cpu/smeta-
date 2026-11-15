@@ -75,6 +75,17 @@ function addItem(focus = true, values = {}) {
     option.textContent = `${product.name} — ${moneyFormatter.format(product.price).replace(/[\u00a0\u202f]/g, " ")}`;
     catalogSelect.append(option);
   }
+  // Attach to every new or restored row and update only that row's fields.
+  catalogSelect.addEventListener("change", () => {
+    const product = catalog.find((entry) => entry.id === catalogSelect.value);
+    if (!product) return;
+    row.querySelector(".item-name").value = product.name;
+    row.querySelector(".item-price").value = String(product.price);
+    const quantity = row.querySelector(".item-quantity");
+    if (!quantity.value.trim()) quantity.value = "1";
+    recalculate();
+    saveDraft();
+  });
   for (const [key, selector] of Object.entries(itemFields)) {
     if (typeof values[key] === "string" && (key !== "unit" || ["шт", "час", "услуга"].includes(values[key]))) {
       row.querySelector(selector).value = values[key];
@@ -90,17 +101,6 @@ document.querySelector("#add-item").addEventListener("click", () => {
   saveDraft();
 });
 items.addEventListener("input", recalculate);
-items.addEventListener("change", (event) => {
-  if (!event.target.matches(".item-catalog")) return;
-  const product = catalog.find((entry) => entry.id === event.target.value);
-  if (!product) return;
-  const row = event.target.closest("tr");
-  row.querySelector(".item-name").value = product.name;
-  row.querySelector(".item-price").value = String(product.price);
-  const quantity = row.querySelector(".item-quantity");
-  if (!quantity.value.trim()) quantity.value = "1";
-  recalculate();
-});
 discountInput.addEventListener("input", recalculate);
 vatInput.addEventListener("input", recalculate);
 currencyInput.addEventListener("change", recalculate);
