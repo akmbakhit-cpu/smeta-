@@ -11,7 +11,7 @@
 <body>
   <main class="workspace">
     <header class="page-header">
-      <p class="eyebrow">ПРОСТОЙ РАСЧЁТ • ₸</p>
+      <p class="eyebrow">ПРОСТОЙ РАСЧЁТ • <span data-currency-symbol>₸</span></p>
       <h1>Смета за 5 минут</h1>
       <p class="hint">Заполните позиции — суммы строк и общий итог посчитаются сами.</p>
     </header>
@@ -29,7 +29,7 @@
     <section class="card positions-card" aria-labelledby="items-title">
       <div class="section-heading">
         <h2 id="items-title">Позиции</h2>
-        <span class="section-note">Все суммы в тенге</span>
+        <span class="section-note">Все суммы в <span data-currency-symbol>₸</span></span>
       </div>
       <table>
         <caption class="sr-only">Позиции сметы. Enter в поле последней строки добавляет позицию.</caption>
@@ -38,7 +38,7 @@
             <th scope="col">Наименование</th>
             <th scope="col">Количество</th>
             <th scope="col">Единица</th>
-            <th scope="col">Цена, ₸</th>
+            <th scope="col">Цена, <span data-currency-symbol>₸</span></th>
             <th scope="col" class="amount-heading">Сумма</th>
             <th scope="col"><span class="sr-only">Удалить</span></th>
           </tr>
@@ -49,8 +49,21 @@
         <button type="button" id="add-item" class="add-button">+ Добавить позицию</button>
         <p class="keyboard-hint">Enter в последней строке — новая позиция</p>
       </div>
+      <div class="calculation-settings" role="group" aria-label="Скидка, НДС и валюта">
+        <label>Скидка, %<input id="discount-rate" type="text" inputmode="decimal" value="0" autocomplete="off" aria-describedby="discount-hint"><span id="discount-hint" class="setting-hint">От 0 до 100 %</span></label>
+        <label>НДС, %<input id="vat-rate" type="text" inputmode="decimal" value="0" autocomplete="off"></label>
+        <label>Валюта<select id="currency"><option value="₸">₸ — тенге</option><option value="₽">₽ — рубль</option><option value="$">$ — доллар</option><option value="€">€ — евро</option></select></label>
+      </div>
     </section>
 
+    <section class="card summary-card" aria-label="Расчёт итоговой суммы">
+      <dl class="summary-list">
+        <div class="summary-row"><dt>Сумма</dt><dd><output id="subtotal">0 ₸</output></dd></div>
+        <div class="summary-row" id="discount-row" hidden><dt>Скидка</dt><dd><output id="discount-amount">0 ₸</output></dd></div>
+        <div class="summary-row" id="discounted-row" hidden><dt>Сумма со скидкой</dt><dd><output id="discounted-subtotal">0 ₸</output></dd></div>
+        <div class="summary-row" id="vat-row" hidden><dt>НДС</dt><dd><output id="vat-amount">0 ₸</output></dd></div>
+      </dl>
+    </section>
     <section class="total-card" aria-labelledby="total-title">
       <h2 id="total-title">Итого к оплате</h2>
       <output id="grand-total" aria-live="polite" aria-atomic="true">0 ₸</output>
@@ -63,7 +76,7 @@
       <td class="name-cell"><label><span class="field-label">Наименование</span><input class="item-name" type="text" placeholder="Товар или услуга"></label></td>
       <td><label><span class="field-label">Количество</span><input class="item-quantity" type="text" inputmode="decimal" placeholder="0" autocomplete="off"></label></td>
       <td><label><span class="field-label">Единица</span><select class="item-unit"><option value="шт">шт</option><option value="час">час</option><option value="услуга">услуга</option></select></label></td>
-      <td><label><span class="field-label">Цена, ₸</span><input class="item-price" type="text" inputmode="decimal" placeholder="0" autocomplete="off"></label></td>
+      <td><label><span class="field-label">Цена, <span data-currency-symbol>₸</span></span><input class="item-price" type="text" inputmode="decimal" placeholder="0" autocomplete="off"></label></td>
       <td class="line-total-cell"><span class="mobile-label" aria-hidden="true">Сумма</span><output class="line-total" aria-label="Сумма строки">0 ₸</output></td>
       <td class="remove-cell"><button type="button" class="remove-button" aria-label="Удалить позицию" title="Удалить позицию">✕</button></td>
     </tr>

@@ -3,7 +3,10 @@
 const items = document.querySelector("#items");
 const template = document.querySelector("#item-template");
 const totalOutput = document.querySelector("#grand-total");
-const moneyFormatter = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 });
+const discountInput = document.querySelector("#discount-rate");
+const vatInput = document.querySelector("#vat-rate");
+const currencyInput = document.querySelector("#currency");
+const moneyFormatter = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 });
 
 function parseNumber(value) {
   const normalized = value.trim().replace(/[\s\u00a0\u202f]/g, "").replace(",", ".");
@@ -13,20 +16,41 @@ function parseNumber(value) {
 }
 
 function formatMoney(value) {
-  return `${moneyFormatter.format(Number.isFinite(value) ? value : 0).replace(/[\u00a0\u202f]/g, " ")} ₸`;
+  return `${moneyFormatter.format(Number.isFinite(value) ? value : 0).replace(/[\u00a0\u202f]/g, " ")} ${currencyInput.value}`;
+}
+
+function roundAmount(value) {
+  const rounded = Math.round(value);
+  return Number.isSafeInteger(rounded) ? rounded : 0;
+}
+
+function updateSummary(outputId, value, rowId) {
+  document.querySelector(outputId).textContent = formatMoney(value);
+  if (rowId) document.querySelector(rowId).hidden = value === 0;
 }
 
 function recalculate() {
-  let totalCents = 0;
+  let subtotal = 0;
   for (const row of items.rows) {
     const quantity = parseNumber(row.querySelector(".item-quantity").value);
     const price = parseNumber(row.querySelector(".item-price").value);
-    const cents = Math.round(quantity * price * 100);
-    const lineCents = Number.isSafeInteger(cents) ? cents : 0;
-    row.querySelector(".line-total").textContent = formatMoney(lineCents / 100);
-    totalCents += lineCents;
+    const lineAmount = roundAmount(quantity * price);
+    row.querySelector(".line-total").textContent = formatMoney(lineAmount);
+    subtotal += lineAmount;
   }
-  totalOutput.textContent = formatMoney(totalCents / 100);
+  subtotal = roundAmount(subtotal);
+  const discountRate = Math.min(100, parseNumber(discountInput.value));
+  const discount = roundAmount(subtotal * (discountRate / 100));
+  const discountedSubtotal = subtotal - discount;
+  const vat = roundAmount(discountedSubtotal * (parseNumber(vatInput.value) / 100));
+  updateSummary("#subtotal", subtotal);
+  updateSummary("#discount-amount", discount, "#discount-row");
+  updateSummary("#discounted-subtotal", discountedSubtotal, "#discounted-row");
+  updateSummary("#vat-amount", vat, "#vat-row");
+  totalOutput.textContent = formatMoney(roundAmount(discountedSubtotal + vat));
+  document.querySelectorAll("[data-currency-symbol]").forEach((label) => {
+    label.textContent = currencyInput.value;
+  });
 }
 
 function addItem(focus = true) {
@@ -38,6 +62,9 @@ function addItem(focus = true) {
 
 document.querySelector("#add-item").addEventListener("click", () => addItem());
 items.addEventListener("input", recalculate);
+discountInput.addEventListener("input", recalculate);
+vatInput.addEventListener("input", recalculate);
+currencyInput.addEventListener("change", recalculate);
 
 items.addEventListener("click", (event) => {
   const button = event.target.closest(".remove-button");
