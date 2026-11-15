@@ -1,5 +1,14 @@
 "use strict";
 
+// Каталог: чтобы изменить список, отредактируйте названия и цены здесь.
+const catalog = [
+  { id: "battery-60", name: "Аккумулятор 60Ah", price: 38000 },
+  { id: "battery-75", name: "Аккумулятор 75Ah", price: 46000 },
+  { id: "oil-filter", name: "Масляный фильтр", price: 2500 },
+  { id: "brake-pads", name: "Тормозные колодки", price: 12000 },
+  { id: "delivery", name: "Доставка", price: 5000 }
+];
+
 const items = document.querySelector("#items");
 const template = document.querySelector("#item-template");
 const totalOutput = document.querySelector("#grand-total");
@@ -9,7 +18,7 @@ const currencyInput = document.querySelector("#currency");
 const moneyFormatter = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 });
 const draftKey = "smeta-five-minutes-draft-v1";
 const draftFieldIds = ["sender", "recipient", "estimate-number", "estimate-date", "discount-rate", "vat-rate", "currency", "comment"];
-const itemFields = { name: ".item-name", quantity: ".item-quantity", unit: ".item-unit", price: ".item-price" };
+const itemFields = { name: ".item-name", quantity: ".item-quantity", unit: ".item-unit", price: ".item-price", catalog: ".item-catalog" };
 let copyStatusTimer;
 
 function parseNumber(value) {
@@ -59,6 +68,13 @@ function recalculate() {
 
 function addItem(focus = true, values = {}) {
   const row = template.content.firstElementChild.cloneNode(true);
+  const catalogSelect = row.querySelector(".item-catalog");
+  for (const product of catalog) {
+    const option = document.createElement("option");
+    option.value = product.id;
+    option.textContent = `${product.name} — ${moneyFormatter.format(product.price).replace(/[\u00a0\u202f]/g, " ")}`;
+    catalogSelect.append(option);
+  }
   for (const [key, selector] of Object.entries(itemFields)) {
     if (typeof values[key] === "string" && (key !== "unit" || ["шт", "час", "услуга"].includes(values[key]))) {
       row.querySelector(selector).value = values[key];
@@ -74,6 +90,17 @@ document.querySelector("#add-item").addEventListener("click", () => {
   saveDraft();
 });
 items.addEventListener("input", recalculate);
+items.addEventListener("change", (event) => {
+  if (!event.target.matches(".item-catalog")) return;
+  const product = catalog.find((entry) => entry.id === event.target.value);
+  if (!product) return;
+  const row = event.target.closest("tr");
+  row.querySelector(".item-name").value = product.name;
+  row.querySelector(".item-price").value = String(product.price);
+  const quantity = row.querySelector(".item-quantity");
+  if (!quantity.value.trim()) quantity.value = "1";
+  recalculate();
+});
 discountInput.addEventListener("input", recalculate);
 vatInput.addEventListener("input", recalculate);
 currencyInput.addEventListener("change", recalculate);
@@ -119,7 +146,7 @@ function preparePrint() {
   document.querySelector("#print-title").textContent = estimateHeading();
 
   // Text copies wrap on paper, so long names and comments are not clipped by controls.
-  document.querySelectorAll(".details-grid input, #items input, #items select, #comment").forEach((field) => {
+  document.querySelectorAll(".details-grid input, #items input, #items .item-unit, #comment").forEach((field) => {
     let value = field.nextElementSibling;
     if (!value || !value.classList.contains("print-value")) {
       value = document.createElement("span");
