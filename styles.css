@@ -59,6 +59,9 @@ td:last-child, th:last-child { padding-right: 0; }
 .privacy-note { text-align: center; margin: 20px 0 0; line-height: 1.6; }
 .sr-only, .field-label { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .mobile-label { display: none; }
+.name-fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: end; }
+.catalog-field { font-size: 12px; }
+.item-catalog { min-width: 0; }
 .print-only, .print-value { display: none; }
 .comment-card { margin-top: 20px; }
 .comment-card h2 label { font: inherit; }
@@ -77,6 +80,7 @@ textarea { display: block; resize: vertical; margin-top: 16px; line-height: 1.6;
 @media screen and (min-width: 641px) and (max-width: 900px) {
   .workspace { padding: 32px 16px; }
   .positions-card { padding: 22px 14px; }
+  .name-fields { grid-template-columns: minmax(0, 1fr); }
   td, th { padding-left: 4px; padding-right: 4px; }
   td input, td select { padding-left: 7px; padding-right: 7px; }
   th:first-child { width: 24%; }
@@ -91,7 +95,8 @@ textarea { display: block; resize: vertical; margin-top: 16px; line-height: 1.6;
   .workspace { width: 100%; max-width: none; padding: 0; margin: 0; }
   .page-header, .section-note, .items-actions, .calculation-settings,
   .pdf-actions, .share-tools, .privacy-note, button, input, select, textarea,
-  .remove-cell, th:last-child, .field-label, .mobile-label { display: none !important; }
+  .remove-cell, th:last-child, .field-label, .mobile-label, .catalog-field { display: none !important; }
+  .name-fields { display: block; }
   .print-only, .print-value { display: block; }
   #print-title { margin: 0 0 8mm; font-size: 19pt; letter-spacing: 0; overflow-wrap: anywhere; }
   .card { padding: 0; margin: 0 0 6mm; border: 0; border-radius: 0; box-shadow: none; background: #fff; }
@@ -142,6 +147,7 @@ textarea { display: block; resize: vertical; margin-top: 16px; line-height: 1.6;
   .item-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 12px; border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; background: #fafcfb; }
   td, td:first-child, td:last-child { display: block; padding: 0; border: 0; min-width: 0; }
   .name-cell { grid-column: 1 / -1; }
+  .name-fields { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .field-label { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip-path: none; white-space: normal; }
   .mobile-label { display: block; font-size: 13px; color: #65746c; margin-bottom: 8px; }
   .line-total-cell { text-align: right; align-self: end; padding-bottom: 11px; }
