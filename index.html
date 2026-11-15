@@ -15,6 +15,7 @@
       <h1>Смета за 5 минут</h1>
       <p class="hint">Заполните позиции — суммы строк и общий итог посчитаются сами.</p>
     </header>
+    <h1 id="print-title" class="print-only"></h1>
 
     <section class="card" aria-labelledby="details-title">
       <h2 id="details-title">Реквизиты</h2>
@@ -56,6 +57,7 @@
       </div>
     </section>
 
+    <div class="invoice-totals">
     <section class="card summary-card" aria-label="Расчёт итоговой суммы">
       <dl class="summary-list">
         <div class="summary-row"><dt>Сумма</dt><dd><output id="subtotal">0 ₸</output></dd></div>
@@ -68,7 +70,28 @@
       <h2 id="total-title">Итого к оплате</h2>
       <output id="grand-total" aria-live="polite" aria-atomic="true">0 ₸</output>
     </section>
-    <p class="privacy-note">Данные остаются в браузере. При обновлении страницы смета очистится.</p>
+    </div>
+    <section class="card comment-card" aria-labelledby="comment-title">
+      <h2 id="comment-title"><label for="comment">Комментарий</label></h2>
+      <textarea id="comment" rows="3" placeholder="Сроки выполнения, условия оплаты и другие договорённости"></textarea>
+    </section>
+    <p class="print-only signature">Подпись ____________________</p>
+    <div class="pdf-actions">
+      <button type="button" id="save-pdf" class="save-button" aria-describedby="pdf-hint">Сохранить PDF</button>
+      <p id="pdf-hint" class="keyboard-hint">В окне печати выберите «Сохранить как PDF».</p>
+    </div>
+    <div class="share-tools">
+      <div class="draft-actions">
+        <button type="button" id="copy-whatsapp" class="add-button">Скопировать для WhatsApp</button>
+        <button type="button" id="new-estimate" class="secondary-button">Новая смета</button>
+        <span id="copy-status" role="status" aria-live="polite"></span>
+      </div>
+      <div id="share-fallback" class="share-fallback" hidden>
+        <label for="share-text">Не удалось скопировать автоматически. Скопируйте текст из поля:</label>
+        <textarea id="share-text" rows="8" readonly></textarea>
+      </div>
+    </div>
+    <p id="draft-status" class="privacy-note" role="status">Черновик сохраняется в этом браузере. Данные не отправляются в интернет.</p>
   </main>
 
   <template id="item-template">
